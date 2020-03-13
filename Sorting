@@ -4,20 +4,20 @@ import java.rmi.Remote;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Sorting implements ISort {
+public class Sorting<T extends Comparable<T>> implements ISort<T> {
 
-	public void heapify(ArrayList<Integer> unordered,int n,int i)
+	public void heapify(ArrayList<T> unordered,int n,int i)
 	{
 		int largest=i;
 		int l=2*i+1;
 		int r=2*i+2;
-		if(l<n&&unordered.get(l)>unordered.get(largest))
+		if(l<n&&(unordered.get(l).compareTo(unordered.get(largest)))>=1)
 		{
 			largest=l;
 			
 		}
 		
-		if(r<n&&unordered.get(r)>unordered.get(largest))
+		if(r<n&&(unordered.get(r).compareTo(unordered.get(largest)))>=1)
 		{
 			largest=r;
 		}
@@ -30,7 +30,11 @@ public class Sorting implements ISort {
 	
 		
 	}
-	public IHeap heapSort(ArrayList  unordered) {
+	public IHeap heapSort(ArrayList<T>  unordered) {
+		if(unordered==null) {
+			IHeap<T> h=new Heap<T>();
+			return h;
+		}
 		int s=unordered.size();
 		for (int i = (unordered.size() / 2) - 1; i >= 0; i--) 
 	        heapify(unordered, unordered.size(), i); 
@@ -44,16 +48,16 @@ public class Sorting implements ISort {
 	        // call max heapify on the reduced heap 
 	        heapify(unordered, i, 0); 
 	    } 
-	    IHeap h=new Heap();
+	    IHeap<T> h=new Heap<T>();
 	    for(int i=0;i<s;i++) {
-	    	h.add((Comparable) unordered.get(i));
+	    	h.add( unordered.get(i));
 	    }
 	    
 		return h;
 	}
 
 	@Override
-	public void sortSlow(ArrayList unordered) {
+	public void sortSlow(ArrayList<T> unordered) {
 		if(unordered==null) {
 			return;
 		}
@@ -61,7 +65,7 @@ public class Sorting implements ISort {
 		{
 			for(int j=i+1;j<unordered.size();j++)
 			{
-				if((int)unordered.get(i)>(int)unordered.get(j))
+				if((unordered.get(i).compareTo(unordered.get(j)))>=1)
 				{
 					Collections.swap(unordered, i, j);
 				}
@@ -70,13 +74,13 @@ public class Sorting implements ISort {
 	}
 
 	@Override
-	public void sortFast(ArrayList unordered) {
+	public void sortFast(ArrayList<T> unordered) {
 		if(unordered==null) {
 			return;
 		}
 		sort(unordered, 0, unordered.size()-1);
 	}
-	 public void sort(ArrayList unorderd, int l, int r) 
+	 public void sort(ArrayList<T> unorderd, int l, int r) 
 	    { 
 	        if (l < r) 
 	        { 
@@ -89,36 +93,36 @@ public class Sorting implements ISort {
 	            merge(unorderd, l, m, r); 
 	        } 
 	    } 
-	public void merge(ArrayList unorderd, int l, int m, int r) 
+	public void merge(ArrayList<T> unorderd, int l, int m, int r) 
 	{ 
         int n1 = m - l + 1; 
         int n2 = r - m; 
   
         
-        int L[] = new int [n1]; 
-        int R[] = new int [n2]; 
+       Comparable<T> L[] = new Comparable [n1]; 
+       Comparable<T> R []=  new Comparable[n2]; 
   
    
         for (int i=0; i<n1; ++i) 
-            L[i] = (int) unorderd.get(l + i); 
+            L[i] =  unorderd.get(l + i); 
         for (int j=0; j<n2; ++j) 
-            R[j] = (int) unorderd.get(m + 1+ j); 
+            R[j] =  unorderd.get(m + 1+ j); 
 
         int i = 0, j = 0; 
  
         int k = l; 
         while (i < n1 && j < n2) 
         { 
-            if (L[i] <= R[j]) 
+            if ((((T) L[i]).compareTo( (T) R[j]))<=0 ) 
             { 
             	unorderd.remove(k);
-                unorderd.add(k, L[i]); 
+                unorderd.add(k,  (T) L[i]); 
                 i++; 
             } 
             else
             { 
             	unorderd.remove(k);
-                unorderd.add(k,R[j]);
+                unorderd.add(k, (T) R[j]);
                 j++; 
             } 
             k++; 
@@ -127,7 +131,7 @@ public class Sorting implements ISort {
         while (i < n1) 
         { 
         	unorderd.remove(k);
-           unorderd.add(k, L[i]); 
+           unorderd.add(k,  (T) L[i]); 
             i++; 
             k++; 
         } 
@@ -136,7 +140,7 @@ public class Sorting implements ISort {
         while (j < n2) 
         { 
         	unorderd.remove(k);
-            unorderd.add(k, R[j]);
+            unorderd.add(k,  (T) R[j]);
             j++; 
             k++; 
         } 
