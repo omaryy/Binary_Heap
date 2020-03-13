@@ -7,5 +7,6 @@ public interface IHeap <T extends Comparable<T>> extends Cloneable{
 	T extract();
 	void insert(T element);
 	void build(java.util.Collection<T> unordered);
+	void add(T element);
 
 }
