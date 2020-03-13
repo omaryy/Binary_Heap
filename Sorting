@@ -31,6 +31,7 @@ public class Sorting implements ISort {
 		
 	}
 	public IHeap heapSort(ArrayList  unordered) {
+		int s=unordered.size();
 		for (int i = (unordered.size() / 2) - 1; i >= 0; i--) 
 	        heapify(unordered, unordered.size(), i); 
 	  
@@ -43,11 +44,19 @@ public class Sorting implements ISort {
 	        // call max heapify on the reduced heap 
 	        heapify(unordered, i, 0); 
 	    } 
-		return null;
+	    IHeap h=new Heap();
+	    for(int i=0;i<s;i++) {
+	    	h.add((Comparable) unordered.get(i));
+	    }
+	    
+		return h;
 	}
 
 	@Override
 	public void sortSlow(ArrayList unordered) {
+		if(unordered==null) {
+			return;
+		}
 		for(int i=0;i<unordered.size()-1;i++)
 		{
 			for(int j=i+1;j<unordered.size();j++)
@@ -62,6 +71,9 @@ public class Sorting implements ISort {
 
 	@Override
 	public void sortFast(ArrayList unordered) {
+		if(unordered==null) {
+			return;
+		}
 		sort(unordered, 0, unordered.size()-1);
 	}
 	 public void sort(ArrayList unorderd, int l, int r) 
